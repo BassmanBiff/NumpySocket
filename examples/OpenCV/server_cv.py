@@ -8,7 +8,7 @@ npSocket = NumpySocket()
 npSocket.startServer(host_ip, 9999)
 
 # Read until video is completed
-while(cap.isOpened()):
+while cap.isOpened():
     ret, frame = cap.read()
     ref_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     frame_resize = imresize(ref_frame, .5)

@@ -8,7 +8,7 @@ npSocket = NumpySocket()
 npSocket.startClient(9999)
 
 # Read until video is completed
-while(True):
+while True:
     # Capture frame-by-frame
     frame = npSocket.recieveNumpy()
     cv2.imshow('Frame', frame)

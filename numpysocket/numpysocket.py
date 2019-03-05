@@ -2,7 +2,7 @@
 
 import socket
 import numpy as np
-from cStringIO import StringIO
+from io import BytesIO
 
 
 class NumpySocket():
@@ -44,16 +44,11 @@ class NumpySocket():
         if not isinstance(image, np.ndarray):
             print('not a valid numpy image')
             return
-        f = StringIO()
+        f = BytesIO()
         np.savez_compressed(f, frame=image)
+        self.socket.sendall(int.to_bytes(f.tell(), 4, 'big'))   # Send length
         f.seek(0)
-        out = f.read()
-        val = "{0}:".format(len(f.getvalue()))  # prepend length of array
-        out = val + out
-        try:
-            self.socket.sendall(out)
-        except Exception:
-            exit()
+        self.socket.sendfile(f)                                 # Send data
         print('image sent')
 
     def startClient(self, port):
@@ -76,28 +71,16 @@ class NumpySocket():
             print("Not setup as a client")
             return
 
-        length = None
-        final_buffer = ""
-        while True:
-            data = self.client_connection.recv(1024)
-            final_buffer += data
-            if len(final_buffer) == length:
+        length = int.from_bytes(self.client_connection.recv(4), 'big')
+        image_buffer = BytesIO()
+        received = 0
+        while received < length:
+            self.client_connection.recv_into(image_buffer, 4096)
+            new_received = image_buffer.tell()
+            if new_received != received:
+                received = new_received
+            else:
                 break
-            while True:
-                if length is None:
-                    if ':' not in final_buffer:
-                        break
-                    # remove the length bytes from the front of final_buffer
-                    # leave any remaining bytes in the final_buffer!
-                    length_str, _, final_buffer = final_buffer.partition(':')
-                    length = int(length_str)
-                if len(final_buffer) < length:
-                    break
-                # split off the full message from the remaining bytes
-                # leave any remaining bytes in the final_buffer!
-                final_buffer = final_buffer[length:]
-                length = None
-                break
-        final_image = np.load(StringIO(final_buffer))['frame']
+        final_image = np.load(image_buffer)['frame']
         print('frame received')
         return final_image
