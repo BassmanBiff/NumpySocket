@@ -25,9 +25,11 @@ class NumpySocket():
         self.port = port
         try:
             self.socket.connect((self.address, self.port))
-            print 'Connected to %s on port %s' % (self.address, self.port)
+            print('Connected to %s on port %s' % (
+                self.address, self.port))
         except socket.error, e:
-            print 'Connection to %s on port %s failed: %s' % (self.address, self.port, e)
+            print('Connection to %s on port %s failed: %s' % (
+                self.address, self.port, e))
             return
 
     def endServer(self):
@@ -75,27 +77,27 @@ class NumpySocket():
             return
 
         length = None
-        ultimate_buffer = ""
+        final_buffer = ""
         while True:
             data = self.client_connection.recv(1024)
-            ultimate_buffer += data
-            if len(ultimate_buffer) == length:
+            final_buffer += data
+            if len(final_buffer) == length:
                 break
             while True:
                 if length is None:
-                    if ':' not in ultimate_buffer:
+                    if ':' not in final_buffer:
                         break
-                    # remove the length bytes from the front of ultimate_buffer
-                    # leave any remaining bytes in the ultimate_buffer!
-                    length_str, ignored, ultimate_buffer = ultimate_buffer.partition(':')
+                    # remove the length bytes from the front of final_buffer
+                    # leave any remaining bytes in the final_buffer!
+                    length_str, _, final_buffer = final_buffer.partition(':')
                     length = int(length_str)
-                if len(ultimate_buffer) < length:
+                if len(final_buffer) < length:
                     break
                 # split off the full message from the remaining bytes
-                # leave any remaining bytes in the ultimate_buffer!
-                ultimate_buffer = ultimate_buffer[length:]
+                # leave any remaining bytes in the final_buffer!
+                final_buffer = final_buffer[length:]
                 length = None
                 break
-        final_image = np.load(StringIO(ultimate_buffer))['frame']
         print 'frame received'
+        final_image = np.load(StringIO(final_buffer))['frame']
         return final_image

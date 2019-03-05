@@ -1,5 +1,5 @@
-from numpysocket import NumpySocket
 import cv2
+from numpysocket import NumpySocket
 from scipy.misc import imresize
 
 host_ip = 'localhost'  # change me
@@ -16,6 +16,7 @@ while(cap.isOpened()):
         npSocket.sendNumpy(frame_resize)
     else:
         break
+
 # When everything done, release the video capture object
 npSocket.endServer()
 cap.release()

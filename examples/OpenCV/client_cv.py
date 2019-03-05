@@ -1,5 +1,6 @@
-# ## From https://stackoverflow.com/questions/30988033/sending-live-video-frame-over-network-in-python-opencv
-# import socket
+# From https://stackoverflow.com/questions/30988033/
+#      sending-live-video-frame-over-network-in-python-opencv
+
 from numpysocket import NumpySocket
 import cv2
 

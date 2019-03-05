@@ -1,5 +1,5 @@
 import setuptools
-#from packagename.version import Version
+# from packagename.version import Version
 
 setuptools.setup(name='Numpy Socket',
                  version='0.1.0',
