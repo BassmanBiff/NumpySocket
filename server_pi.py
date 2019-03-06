@@ -10,7 +10,7 @@ with PiCamera(format='jpeg', bayer=True) as cam:
     with PiBayerArray(cam, outpit_dims=2) as stream:
         success = True
         while success:
-            success = npSocket.send(stream.array)
+            success = npSocket.send_array(stream.array)
 
 # When everything done, release the video capture object
 npSocket.end()

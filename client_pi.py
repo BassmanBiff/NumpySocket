@@ -12,7 +12,7 @@ cv2.namedWindow('PiCamera')
 # Read until video is completed
 while True:
     # Receive and display frames until pressing q
-    frame = npSocket.recv()
+    frame = npSocket.recv_array()
     cv2.imshow('PiCamera', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
