@@ -1,4 +1,4 @@
-from NumpyServer import NumpyServer
+from numpysocket import NumpyServer
 from picamera import PiCamera
 from picamera.array import PiBayerArray
 
