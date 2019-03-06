@@ -31,13 +31,13 @@ class NumpyClient(NumpySocket):
 
     def recv_array(self):
         length = int.from_bytes(self.recv(4), 'big')
-        print("Received length: ", length)
+        # print("Received length: ", length)
         image_buffer = b''
         received = 0
         while received < length:
             image_buffer += self.recv(6291456)
             new_received = len(image_buffer)
-            print("Received total {}...".format(new_received))
+            # print("Received total {}...".format(new_received))
             if new_received != received:
                 received = new_received
             else:
@@ -46,6 +46,9 @@ class NumpyClient(NumpySocket):
 
 
 class NumpyServer(NumpySocket):
+    def __init__(self):
+        self.buffer = BytesIO()
+
     def start(self, port):
         self.address = ''
         self.port = port
@@ -60,11 +63,13 @@ class NumpyServer(NumpySocket):
     def send_array(self, image):
         if not isinstance(image, np.ndarray):
             raise TypeError("send_array requires a valid ndarray.")
-        f = BytesIO()
-        np.savez_compressed(f, frame=image)
-        self.client.sendall(int.to_bytes(f.tell(), 4, 'big'))
-        print("Sent length: ", f.tell())
-        # f.seek(0)
+        buffer = self.buffer
+        np.savez_compressed(buffer, frame=image)
+        self.client.send(int.to_bytes(buffer.tell(), 4, 'big'))
+        # print("Sent length: ", f.tell())
+        buffer.seek(0)
         self.client.sendfile(f)
-        print("Sent file.")
+        # print("Sent file.")
+        buffer.seek(0)
+        buffer.truncate()
         return True
