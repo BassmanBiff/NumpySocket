@@ -15,16 +15,8 @@ class NumpySocket(socket.socket):
 
 class NumpyClient(NumpySocket):
     def start(self, address, port):
-        self.address = address
-        self.port = port
-        try:
-            self.connect((self.address, self.port))
-            print('Connected to {} on port {}'.format(
-                self.address, self.port))
-        except socket.error as e:
-            print('Connection to {} on port {} failed: {}'.format(
-                self.address, self.port, e))
-            return
+        self.address, self.port = address, port
+        self.connect((address, port))
 
     def end(self):
         self.shutdown(1)
