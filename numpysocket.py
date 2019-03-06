@@ -13,7 +13,7 @@ class NumpySocket():
 
 
 class NumpyClient(NumpySocket):
-    def startClient(self, address, port):
+    def start(self, address, port):
         self.address = address
         self.port = port
         try:
@@ -25,11 +25,11 @@ class NumpyClient(NumpySocket):
                 self.address, self.port, e))
             return
 
-    def endClient(self):
+    def end(self):
         self.socket.shutdown(1)
         self.socket.close()
 
-    def recieveNumpy(self):
+    def recv(self):
         length = int.from_bytes(self.server_connection.recv(4), 'big')
         image_buffer = b''
         received = 0
@@ -50,11 +50,11 @@ class NumpyServer(NumpySocket):
         self.port = port
         self.socket.bind((self.address, self.port))
         self.socket.listen(1)
-        self.server_connection, self.server_address = self.socket.accept()
+        self.client_connection, self.client_address = self.socket.accept()
 
     def endServer(self):
-        self.server_connection.shutdown(1)
-        self.server_connection.close()
+        self.client_connection.shutdown(1)
+        self.client_connection.close()
 
     def sendNumpy(self, image):
         if not isinstance(image, np.ndarray):
