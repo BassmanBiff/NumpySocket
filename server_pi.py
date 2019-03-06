@@ -6,6 +6,7 @@ npSocket = NumpyServer()
 npSocket.start(9999)
 
 # Read until video is completed
+camera_port = 0
 with PiCamera(camera_port, sensor_mode=2) as camera:
     with PiBayerArray(camera, output_dims=2) as stream:
         camera.capture(
