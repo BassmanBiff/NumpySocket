@@ -35,7 +35,7 @@ class NumpyClient(NumpySocket):
         image_buffer = b''
         received = 0
         while received < length:
-            image_buffer += self.recv(65536)
+            image_buffer += self.recv(6291456)
             new_received = len(image_buffer)
             print("Received total {}...".format(new_received))
             if new_received != received:
