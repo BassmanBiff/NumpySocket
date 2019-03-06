@@ -53,7 +53,10 @@ class NumpyServer(NumpySocket):
         self.client, self.client_address = self.accept()
 
     def end(self):
-        self.client.shutdown(1)
+        try:
+            self.client.shutdown(1)
+        except Exception:
+            pass
         self.client.close()
 
     def send_array(self, array):
