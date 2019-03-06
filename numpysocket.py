@@ -40,15 +40,15 @@ class NumpyClient(NumpySocket):
         else:
             buffer.write(self.recv(length, socket.MSG_WAITALL))
         buffer.seek(0)
-        img = np.load(buffer)['frame']
+        array = np.load(buffer)['array']
         buffer.seek(0)
         buffer.truncate()
-        return img
+        return array
 
 
 class NumpyServer(NumpySocket):
     def start(self, port):
-        self.bind(('', self.port))
+        self.bind(('', port))
         self.listen(1)
         self.client, self.client_address = self.accept()
 
@@ -56,16 +56,14 @@ class NumpyServer(NumpySocket):
         self.client.shutdown(1)
         self.client.close()
 
-    def send_array(self, image):
-        if not isinstance(image, np.ndarray):
+    def send_array(self, array):
+        if not isinstance(array, np.ndarray):
             raise TypeError("send_array requires a valid ndarray.")
         buffer = self.buffer
-        np.savez_compressed(buffer, frame=image)
+        np.savez_compressed(buffer, array=array)
         self.client.send(int.to_bytes(buffer.tell(), 4, 'big'))
-        # print("Sent length: ", f.tell())
         buffer.seek(0)
         sent = self.client.sendfile(buffer)
-        # print("Sent file.")
         buffer.seek(0)
         buffer.truncate()
         return sent
