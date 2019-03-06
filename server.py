@@ -6,7 +6,7 @@ npSocket = NumpyServer()
 npSocket.start(9999)
 
 # Send array
-frame = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+frame = np.zeros((10000, 10000))
 npSocket.send_array(frame)
 
 # End
