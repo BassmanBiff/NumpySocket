@@ -37,10 +37,6 @@ class NumpySocket():
         self.socket.close()
 
     def sendNumpy(self, image):
-        if self.type is not "client":
-            print("Not setup as a client")
-            return False
-
         if not isinstance(image, np.ndarray):
             print('not a valid numpy image')
             return False
@@ -74,10 +70,6 @@ class NumpySocket():
         self.server_connection.close()
 
     def recieveNumpy(self):
-        if self.type is not "server":
-            print("Not setup as a server")
-            return
-
         length = int.from_bytes(self.server_connection.recv(4), 'big')
         image_buffer = b''
         received = 0
