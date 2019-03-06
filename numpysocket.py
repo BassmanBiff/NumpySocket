@@ -29,7 +29,7 @@ class NumpyClient(NumpySocket):
         self.shutdown(1)
         self.close()
 
-    def recv_array(self, compressed=True):
+    def recv_array(self):
         length = int.from_bytes(self.recv(4), 'big')
         print("Received length: ", length)
         image_buffer = b''
@@ -42,9 +42,7 @@ class NumpyClient(NumpySocket):
                 received = new_received
             else:
                 break
-        if compressed:
-            return np.load(BytesIO(image_buffer))['frame']
-        return np.load(BytesIO(image_buffer))
+        return np.load(BytesIO(image_buffer))['frame']
 
 
 class NumpyServer(NumpySocket):
@@ -59,22 +57,14 @@ class NumpyServer(NumpySocket):
         self.client.shutdown(1)
         self.client.close()
 
-    def send_array(self, image, compressed=True):
+    def send_array(self, image):
         if not isinstance(image, np.ndarray):
-            print('not a valid numpy image')
-            return False
-        try:
-            f = BytesIO()
-            if compressed:
-                np.savez_compressed(f, frame=image)
-            else:
-                np.save(f, image)
-            self.client.sendall(int.to_bytes(f.tell(), 4, 'big'))
-            print("Sent length: ", f.tell())
-            f.seek(0)
-            self.client.sendfile(f)
-            print("Sent file.")
-        except Exception as e:
-            print(e)
-            return False
+            raise TypeError("send_array requires a valid ndarray.")
+        f = BytesIO()
+        np.savez_compressed(f, frame=image)
+        self.client.sendall(int.to_bytes(f.tell(), 4, 'big'))
+        print("Sent length: ", f.tell())
+        # f.seek(0)
+        self.client.sendfile(f)
+        print("Sent file.")
         return True
