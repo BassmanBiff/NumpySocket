@@ -64,10 +64,10 @@ class NumpyServer(NumpySocket):
         try:
             f = BytesIO()
             np.savez_compressed(f, frame=image)
-            self.sendall(int.to_bytes(f.tell(), 4, 'big'))
+            self.client.sendall(int.to_bytes(f.tell(), 4, 'big'))
             print("Sent length: ", f.tell())
             f.seek(0)
-            self.socket.sendfile(f)
+            self.client.sendfile(f)
             print("Sent file.")
         except Exception as e:
             print(e)
