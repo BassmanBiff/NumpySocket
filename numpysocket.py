@@ -10,17 +10,10 @@ class NumpySocket():
         self.address = 0
         self.port = 0
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.type = None  # client or server
 
-    # def __del__(self):
-    #     if self.type is "server":
-    #         self.endServer()
-    #     if self.type is "client":
-    #         self.endClient()
-    #     print(self.id, 'closed')
 
+class NumpyClient(NumpySocket):
     def startClient(self, address, port):
-        self.type = "client"
         self.address = address
         self.port = port
         try:
@@ -35,6 +28,33 @@ class NumpySocket():
     def endClient(self):
         self.socket.shutdown(1)
         self.socket.close()
+
+    def recieveNumpy(self):
+        length = int.from_bytes(self.server_connection.recv(4), 'big')
+        image_buffer = b''
+        received = 0
+        while received < length:
+            image_buffer += self.server_connection.recv(4096)
+            new_received = len(image_buffer)
+            if new_received != received:
+                received = new_received
+            else:
+                break
+        final_image = np.load(BytesIO(image_buffer))['frame']
+        return final_image
+
+
+class NumpyServer(NumpySocket):
+    def startServer(self, port):
+        self.address = ''
+        self.port = port
+        self.socket.bind((self.address, self.port))
+        self.socket.listen(1)
+        self.server_connection, self.server_address = self.socket.accept()
+
+    def endServer(self):
+        self.server_connection.shutdown(1)
+        self.server_connection.close()
 
     def sendNumpy(self, image):
         if not isinstance(image, np.ndarray):
@@ -53,33 +73,3 @@ class NumpySocket():
 
         print('image sent')
         return True
-
-    def startServer(self, port):
-        self.type = "server"
-        self.address = ''
-        self.port = port
-
-        self.socket.bind((self.address, self.port))
-        self.socket.listen(1)
-        print('waiting for a connection...')
-        self.server_connection, self.server_address = self.socket.accept()
-        print('connected to ', self.server_address[0])
-
-    def endServer(self):
-        self.server_connection.shutdown(1)
-        self.server_connection.close()
-
-    def recieveNumpy(self):
-        length = int.from_bytes(self.server_connection.recv(4), 'big')
-        image_buffer = b''
-        received = 0
-        while received < length:
-            image_buffer += self.server_connection.recv(4096)
-            new_received = len(image_buffer)
-            if new_received != received:
-                received = new_received
-            else:
-                break
-        final_image = np.load(BytesIO(image_buffer))['frame']
-        print('frame received')
-        return final_image
