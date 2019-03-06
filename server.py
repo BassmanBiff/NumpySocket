@@ -1,7 +1,7 @@
 from numpysocket import NumpySocket
 import numpy as np
 
-host_ip = 'localhost'  # change me
+host_ip = '172.16.16.117'  # change me
 npSocket = NumpySocket()
 npSocket.startServer(host_ip, 9999)
 

@@ -4,8 +4,9 @@
 from numpysocket import NumpySocket
 import cv2
 
+host_ip = '172.16.16.117'  # change me
 npSocket = NumpySocket()
-npSocket.startServer('localhost', 9999)
+npSocket.startClient(host_ip, 9999)
 cv2.namedWindow('PiCamera')
 
 # Read until video is completed
