@@ -18,10 +18,10 @@ class NumpyClient(NumpySocket):
         self.port = port
         try:
             self.connect((self.address, self.port))
-            print('Connected to %s on port %s' % (
+            print('Connected to {} on port {}'.format(
                 self.address, self.port))
         except socket.error as e:
-            print('Connection to %s on port %s failed: %s' % (
+            print('Connection to {} on port {} failed: {}'.format(
                 self.address, self.port, e))
             return
 
@@ -31,11 +31,13 @@ class NumpyClient(NumpySocket):
 
     def recv_array(self):
         length = int.from_bytes(self.recv(4), 'big')
+        print("Received length: ", length)
         image_buffer = b''
         received = 0
         while received < length:
             image_buffer += self.recv(4096)
             new_received = len(image_buffer)
+            print("Received total {}...".format(new_received))
             if new_received != received:
                 received = new_received
             else:
@@ -63,8 +65,10 @@ class NumpyServer(NumpySocket):
             f = BytesIO()
             np.savez_compressed(f, frame=image)
             self.sendall(int.to_bytes(f.tell(), 4, 'big'))
+            print("Sent length: ", f.tell())
             f.seek(0)
             self.socket.sendfile(f)
+            print("Sent file.")
         except Exception as e:
             print(e)
             return False
