@@ -69,7 +69,7 @@ class NumpyServer(NumpySocket):
         self.client.send(int.to_bytes(buffer.tell(), 4, 'big'))
         # print("Sent length: ", f.tell())
         buffer.seek(0)
-        self.client.sendfile(f)
+        self.client.sendfile(buffer)
         # print("Sent file.")
         buffer.seek(0)
         buffer.truncate()
