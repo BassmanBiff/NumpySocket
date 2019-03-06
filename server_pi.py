@@ -15,6 +15,8 @@ with PiCamera(camera_port, sensor_mode=2) as camera:
                          bayer=True,     # Include Bayer data in metadata
                          thumbnail=None):
             npSocket.send_array(stream.array)
+            stream.seek(0)
+            stream.truncate(0)
 
 # When everything done, release the video capture object
 npSocket.end()

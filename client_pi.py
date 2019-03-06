@@ -4,7 +4,7 @@
 from numpysocket import NumpyClient
 import cv2
 
-host_ip = '172.16.16.117'  # change me
+host_ip = '172.16.16.117'
 npSocket = NumpyClient()
 npSocket.start(host_ip, 9999)
 cv2.namedWindow('PiCamera')
@@ -13,7 +13,7 @@ cv2.namedWindow('PiCamera')
 while True:
     # Receive and display frames until pressing q
     frame = npSocket.recv_array()
-    cv2.imshow('PiCamera', cv2.resize(frame, None, fy=0.2, fx=0.2))
+    cv2.imshow('PiCamera', cv2.resize(frame << 6, None, fy=0.2, fx=0.2))
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
