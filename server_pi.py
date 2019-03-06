@@ -3,7 +3,7 @@ from picamera import PiCamera
 from picamera.array import PiBayerArray
 
 npSocket = NumpySocket()
-npSocket.startClient(9999)
+npSocket.startServer(9999)
 
 # Read until video is completed
 with PiCamera(format='jpeg', bayer=True) as cam:
