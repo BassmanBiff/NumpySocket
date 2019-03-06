@@ -47,6 +47,7 @@ class NumpyClient(NumpySocket):
 
 class NumpyServer(NumpySocket):
     def __init__(self):
+        super().__init__()
         self.buffer = BytesIO()
 
     def start(self, port):
