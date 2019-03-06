@@ -49,7 +49,7 @@ class NumpyServer(NumpySocket):
         self.port = port
         self.bind((self.address, self.port))
         self.listen(1)
-        self.client, self.client_address = self.socket.accept()
+        self.client, self.client_address = self.accept()
 
     def end(self):
         self.client.shutdown(1)
