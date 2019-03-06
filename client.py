@@ -1,12 +1,12 @@
-from numpysocket import NumpySocket
+from numpysocket import NumpyClient
 
-npSocket = NumpySocket()
-npSocket.startClient(9999)
+npSocket = NumpyClient()
+npSocket.start(9999)
 
 # Read an array
-frame = npSocket.recieveNumpy()
+frame = npSocket.recv_array()
 print("Received {}, shape {}, type {}".format(
     type(frame), frame.shape, frame.dtype))
 
-npSocket.endServer()
+npSocket.end()
 print("Closing")
